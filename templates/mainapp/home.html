@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock title %}
+
+
+{% block main_content %}
+<section class="h-100 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-9 col-xl-7">
+        <div class="card">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+              {% if profile.picture %}
+              <img src="{{profile.picture.url}}" alt="Generic placeholder image"
+                class="img-fluid img-thumbnail mt-4 mb-2" style="width: 150px; z-index: 1; ">
+              {% else %}
+              <img src="https://storage.needpix.com/rsynced_images/blank-profile-picture-973460_1280.png"
+                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1; ">
+              {% endif %}
+
+              <button type="button" class="btn btn-outline-dark" style="z-index: 1;" data-mdb-toggle="modal"
+                data-mdb-target="#exampleModal">
+                Edit profile
+              </button>
+            </div>
+            <div class="ms-3" style="margin-top: 130px;">
+              <h5>{{profile.name}}</h5>
+              <p>@{{profile.user.username}}</p>
+            </div>
+          </div>
+          <div class="p-4 text-black" style="background-color: #f8f9fa;">
+            <div class="d-flex justify-content-end text-center py-1">
+              {% if type == "Student" %}
+              <button type="button" class="btn btn-danger" disabled>Student Profile</button>
+              {% elif type == "Professor" %}
+              <button type="button" class="btn btn-danger" disabled>Professor Profile</button>
+              {% else %}
+              <button type="button" class="btn btn-danger" disabled>Company Profile</button>
+              {% endif %}
+            </div>
+          </div>
+          <div class="p-4 text-black" style="background-color: #f8f9fa;">
+            <hr>
+            <div class="d-flex text-center py-1">
+              {% if type == "Student" %}
+              <button type="button" class="btn btn-danger" disabled>Update Resume</button>
+              {% elif type == "Professor" %}
+              <button type="button" class="btn btn-success" data-mdb-toggle="modal"
+                data-mdb-target="#exampleModal2">Invite Student</button>
+              {% else %}
+              <button type="button" class="btn btn-success" data-mdb-toggle="modal"
+                data-mdb-target="#exampleModal3">Post A Job</button>
+              {% endif %}
+            </div>
+          </div>
+          <div class="card-body p-4 text-black">
+            <hr>
+            <div class="mb-5">
+              <p class="lead fw-normal mb-1 mt-2">About</p>
+              <div class="p-4" style="background-color: #f8f9fa;">
+                <p class="font-italic mb-1">{{profile.gender}}</p>
+                <p class="font-italic mb-1">{{profile.email}}</p>
+              </div>
+            </div>
+            {% if type == "Professor" %}
+            <p class="lead fw-normal mb-1 mt-2">Students</p>
+            <hr>
+            <div class="table-responsive">
+              <table class="table  align-middle mb-0 bg-white  ">
+                <thead class="bg-light">
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in my_students %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        {% if student.picture %}
+                        <img src="{{student.picture.url}}" alt="" style="width: 45px; height: 45px"
+                          class="rounded-circle" />
+                        {% else %}
+                        <img src="https://storage.needpix.com/rsynced_images/blank-profile-picture-973460_1280.png"
+                          alt="" style="width: 45px; height: 45px" class="rounded-circle" />
+                        {% endif %}
+                        <div class="ms-3">
+                          <p class="fw-bold mb-1">
+                            {% if student.name %}
+                            {{student.name}}
+                            {% else %}
+                            Not Entered Yet
+                            {% endif %}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="fw-normal mb-1">{{student.email}}</p>
+
+                    </td>
+                    <td>
+                      {% if student.status %}
+                      <span class="badge badge-success rounded-pill d-inline">Trainee</span>
+                      {% else %}
+                      <span class="badge badge-danger rounded-pill d-inline">Not Yet Selected</span>
+                      {% endif %}
+                    </td>
+
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% elif type == "Company" %}
+            <p class="lead fw-normal mb-1 mt-2">Posted Jobs</p>
+            <hr>
+            <div class="table-responsive">
+              <table class="table  align-middle mb-0 bg-white  ">
+                <thead class="bg-light">
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Vaccencies</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for job in jobs %}
+                  <tr>
+                    <td>
+                     {{job.job_title}}
+                    </td>
+                    <td>
+                      {{job.job_description|slice:":30"}}
+                    </td>
+                    <td>
+                      {{job.date_posted}}
+                    </td>
+
+                    <td>
+                      {{job.job_location}}
+                    </td>
+                    <td>
+                      {{job.number_of_vaccencies}}
+                    </td>
+                    <td>
+                     
+                      <a href="{% url 'delete_job' job.pk %}" class="btn btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
+                          <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15h9.286zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zM.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8H.8z"/>
+                        </svg>
+                       </a> 
+                       <a href="{% url 'view_a_job' job.pk %}" class="btn btn-outline-primary mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                          <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                          <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                        </svg>
+                       </a>
+                    </td>
+
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            fdgj
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Profile</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'update_profile' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="name" value="{{profile.name}}" required />
+            <label class="form-label" for="form1Example1">Name</label>
+          </div>
+
+          <div class="form-outline mb-4">
+            <input type="email" id="form1Example12" name="email" class="form-control" value="{{profile.email}}"
+              required />
+            <label class="form-label" for="form1Example12">Email</label>
+          </div>
+
+          <div class="form-outline mb-4">
+            <input type="file" id="form3Example8" accept="image/*" class="form-control" name="picture" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Update</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel2">Invite A Student</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'add_student' %}" method="post">
+          {% csrf_token %}
+          <div class="form-outline mb-4">
+            <input type="email" id="form1Example1" class="form-control" name="student_email" required />
+            <label class="form-label" for="form1Example1">Student Email</label>
+          </div>
+
+          <button type="submit" class="btn btn-outline-danger">Invite</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel3">Post A Job</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'post_jobs' %}" method="post">
+          {% csrf_token %}
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="job_title" required />
+            <label class="form-label" for="form1Example1">Job Title</label>
+          </div>
+          <div class="form-outline mb-4">
+            <textarea type="text" id="form1Example1" class="form-control" name="job_description" required
+              rows="5"></textarea>
+            <label class="form-label" for="form1Example1">Job Description</label>
+          </div>
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="job_location" required />
+            <label class="form-label" for="form1Example1">Job Location</label>
+          </div>
+          <div class="form-outline mb-4">
+            <input type="number" id="form1Example1" class="form-control" name="number_of_vaccencies" required />
+            <label class="form-label" for="form1Example1">Number of Vaccencies</label>
+          </div>
+          <button class="btn btn-outline-danger" type="submit">Post</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main_content %}
