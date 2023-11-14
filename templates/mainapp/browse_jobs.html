@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Browse Jobs
+{% endblock title %}
+
+
+{% block main_content %}
+<div class="container">
+    <br><br>
+    <div class="card">
+        <div class="card-header">
+            <b>All Jobs</b>
+        </div>
+    </div>
+
+    {% for job in all_jobs %}
+    <div class="card mb-2">
+        <div class="card-body">
+            <a href="{% url 'view_a_job' job.pk %}">
+                <b><u>{{job.job_title}}</u></b>
+            </a>
+            <p>{{job.job_description}}</p>
+            <p>
+                <b style="color: red;">{{job.posted_by.name}}</b> &nbsp;&nbsp;
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+            </svg> {{job.job_location}}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock main_content %}

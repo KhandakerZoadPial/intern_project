@@ -10,3 +10,9 @@ class Jobs(models.Model):
     number_of_vaccencies = models.IntegerField(default=1)
     applied_bys = models.ManyToManyField(Student, blank=True, null=True)
     date_posted = models.DateField(auto_now_add=True)
+
+
+class Selection(models.Model):
+    job = models.ForeignKey(Jobs, on_delete=models.CASCADE, blank=True, null=True)
+    selected_student = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True, null=True)
+    approved_by_professor = models.BooleanField(default=False)

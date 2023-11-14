@@ -26,4 +26,3 @@ class Company(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     picture = models.ImageField(upload_to='company_images/', blank=True, null=True)
-

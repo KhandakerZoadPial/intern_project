@@ -133,3 +133,12 @@ def update_profile(request):
     
     profile.save()
     return redirect('home')
+
+
+@login_required(login_url='login')
+def change_passowrd(request):
+    user = request.user
+    user.set_password(request.POST.get('password'))
+    user.save()
+
+    return redirect('home')

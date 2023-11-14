@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-View {{job.job_location}}
+{{the_job.posted_by.name}} | {{the_job.job_title}}
 {% endblock title %}
 
 
@@ -43,14 +43,75 @@ View {{job.job_location}}
 
             <br>
             {% if type == "Student" %}
-            <a href="" class="btn btn-outline-success">
+
+            {% if profile.student_resume %}
+            <a href="{% url 'apply_to_job' the_job.pk %}" class="btn btn-outline-success">
                 Apply <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-check-fill" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zm8.854-9.646a.5.5 0 0 0-.708-.708L7.5 7.793 6.354 6.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
                   </svg>
             </a>
+            {% else %}
+            <a href="" class="btn btn-outline-success">
+                Add Your Resume 
+            </a>
+            {% endif %}
+            
             {% elif type == "Company" %}
             {% if owner %}
             <b>All Applications-</b>
+            <div class="table-responsive">
+                <table class="table  align-middle mb-0 bg-white  ">
+                  <thead class="bg-light">
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Resume</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for student in the_job.applied_bys.all %}
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          {% if student.picture %}
+                          <img src="{{student.picture.url}}" alt="" style="width: 45px; height: 45px"
+                            class="rounded-circle" />
+                          {% else %}
+                          <img src="https://storage.needpix.com/rsynced_images/blank-profile-picture-973460_1280.png"
+                            alt="" style="width: 45px; height: 45px" class="rounded-circle" />
+                          {% endif %}
+                          <div class="ms-3">
+                            <p class="fw-bold mb-1">
+                              {% if student.name %}
+                              {{student.name}}
+                              {% else %}
+                              Not Entered Yet
+                              {% endif %}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="fw-normal mb-1">{{student.email}}</p>
+  
+                      </td>
+                      <td>
+                        <a href="{{student.student_resume.url}}">Download</a>
+                      </td>
+                      <td>
+                        <a href="{% url 'select_student' the_job.pk student.pk %}" class="btn btn-outline-danger"> Select
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                                <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z"/>
+                              </svg>
+                        </a>
+                      </td>
+  
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             {% endif %}
             {% endif %}
         </div>

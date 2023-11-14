@@ -23,6 +23,7 @@ def home(request):
             context['profile'] = Professor.objects.filter(user=user)[0]
             my_students = Student.objects.filter(my_professor=context['profile'])
             context['my_students'] = my_students
+            # context['my_applied_jobs'] = Jobs
         elif Company.objects.filter(user=user).count() > 0:
             print('yes')
             context['type'] = 'Company'
@@ -134,7 +135,20 @@ def apply_to_job(request, job_id):
         else:
             # the job does not exists or deleted
             pass
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required(login_url='login')
+def update_resume(request):
+    user = request.user
+    if Student.objects.filter(user=user).count() > 0:
+        profile = Student.objects.filter(user=user)[0]
+        resume = request.FILES.get('resume')
+
+        profile.student_resume = resume
+        profile.save()
     return redirect('home')
+
 
 @login_required(login_url='login')
 def browse_jobs(request):
@@ -159,6 +173,26 @@ def browse_jobs(request):
     context['all_jobs'] = Jobs.objects.all().order_by('-pk')
     
     return render(request,'mainapp/browse_jobs.html', context)
+
+
+
+@login_required(login_url='login')
+def select_student(request, job_id, student_id):
+    user = request.user
+
+    if Company.objects.filter(user=user).count() > 0:
+        profile = Company.objects.filter(user=user)[0]
+        job = Jobs.objects.get(pk=job_id)
+        student = Student.objects.get(pk=student_id)
+        if job.posted_by == profile:
+            s = Selection()
+            s.job = job
+            s.selected_student = student
+            s.save()
+            student.status = True
+            student.save()
+    return redirect(request.META.get('HTTP_REFERER'))
+
 
 # helpers
 def generate_password():
