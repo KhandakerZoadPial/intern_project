@@ -21,7 +21,7 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             # messages.success(request, 'Successfully logged in.')
-            return redirect('home')
+            return redirect('browse_jobs')
         else:
             messages.error(request, 'Please provide valid credentials!')
             return redirect('login')

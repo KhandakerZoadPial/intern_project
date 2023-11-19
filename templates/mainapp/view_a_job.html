@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{the_job.posted_by.name}} | {{the_job.job_title}}
+{{job.posted_by.name}} | {{job.job_title}}
 {% endblock title %}
 
 
@@ -10,38 +10,64 @@
     <br><br>
     <div class="card">
         <div class="card-header">
-           Job by - <b style="color: red;">{{the_job.posted_by.name}}</b>
+           Job by - <b style="color: red;">{{job.posted_by.name}}</b>
         </div>
         <div class="card-body">
-            <b>Job Title:</b>
-            <hr>
-            <h6>{{the_job.job_title}}</h6>
-            <br>
+          <div class="row">
+            <div class="col-4">
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Job Title:</span>
+                        <b>{{job.job_title}}</b>
+                    </div>
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Vacancy:</span>
+                        <b>{{job.number_of_vaccencies}}</b>
+                    </div>
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Required Major:</span>
+                        <b>{{job.major}}</b>
+                    </div>
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Performance Type:</span>
+                        <b>{{job.performance_type}}</b>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            
 
-            <b>Job Description:</b>
-            <hr>
-            <h6>{{the_job.job_description}} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque tempore quaerat similique distinctio rerum aspernatur officiis et mollitia blanditiis esse incidunt repellendus consequuntur pariatur, architecto velit. Placeat molestiae ex eius. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, beatae impedit quibusdam facere quasi ut voluptatibus! Earum dolorum quibusdam nostrum est eos veniam non. Suscipit nihil aspernatur mollitia illum ipsum?</h6>
-            <br>
-            <b>Job Location:</b>
-            <hr>
-            <h6>{{the_job.job_location}}</h6>
+            <div class="col-4">
 
-            <br>
-            <b>Vaccencies:</b>
-            <hr>
-            <h6>{{the_job.number_of_vaccencies}}</h6>
+                <div style="display: flex; flex-direction: column;">
+                    
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Company:</span>
+                        <b>{{job.posted_by.name}}</b>
+                    </div>
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Location:</span>
+                        <b>{{job.job_location}}</b>
+                    </div>
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                        <span style="min-width: 150px;">Date:</span>
+                        <b>{{job.date_posted}}</b>
+                    </div>
 
-            <br>
-            <b>Posted On:</b>
-            <hr>
-            <h6>{{the_job.date_posted}}</h6>
-
-            <br>
-            <b>Number Of Applications:</b>
-            <hr>
-            <h6>{{the_job.applied_bys.all.count}}</h6>
-
-            <br>
+                    <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                      <span style="min-width: 150px;">Number Of Applications:</span>
+                      <b>{{job.applied_bys.all.count}}</b>
+                  </div>
+                    
+                </div>
+            </div>
+            
+          </div>
+            
+            
+           
+           
             {% if type == "Student" %}
 
             {% if profile.student_resume %}
@@ -58,6 +84,7 @@
             
             {% elif type == "Company" %}
             {% if owner %}
+            <br><br>
             <b>All Applications-</b>
             <div class="table-responsive">
                 <table class="table  align-middle mb-0 bg-white  ">
@@ -70,7 +97,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for student in the_job.applied_bys.all %}
+                    {% for student in job.applied_bys.all %}
                     <tr>
                       <td>
                         <div class="d-flex align-items-center">
@@ -100,7 +127,7 @@
                         <a href="{{student.student_resume.url}}">Download</a>
                       </td>
                       <td>
-                        <a href="{% url 'select_student' the_job.pk student.pk %}" class="btn btn-outline-danger"> Select
+                        <a href="{% url 'select_student' job.pk student.pk %}" class="btn btn-outline-danger"> Select
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
                                 <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z"/>
                               </svg>

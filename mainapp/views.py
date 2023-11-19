@@ -73,7 +73,7 @@ def post_jobs(request):
         profile = Company.objects.filter(user=user)[0]
 
         job_title = request.POST.get('job_title')
-        job_description = request.POST.get('job_description')
+        # job_description = request.POST.get('job_description')
         number_of_vaccencies = request.POST.get('number_of_vaccencies')
         job_location = request.POST.get('job_location')
         major = request.POST.get('major')
@@ -81,13 +81,11 @@ def post_jobs(request):
         job = Jobs()
         job.posted_by = profile
         job.job_title = job_title
-        job.job_description = job_description
+        # job.job_description = job_description
         job.job_location = job_location
         job.number_of_vaccencies = int(number_of_vaccencies)
         job.major = major
         job.performance_type = request.POST.get('performance_type')
-        job.working_time = request.POST.get('working_time')
-        job.salary = request.POST.get('salary')
         job.save()
     
     return redirect('/')
@@ -111,7 +109,7 @@ def view_a_job(request, job_id):
     }
     user = request.user
     context['owner'] = False
-    context['the_job'] = Jobs.objects.get(pk=job_id)
+    context['job'] = Jobs.objects.get(pk=job_id)
 
     if Student.objects.filter(user=user).count() > 0:
         context['type'] = 'Student'
@@ -125,7 +123,7 @@ def view_a_job(request, job_id):
         context['type'] = 'Company'
         context['profile'] = Company.objects.filter(user=user)[0]
         context['notifications'] = NotificationC.objects.filter(student=context['profile']).order_by('-pk')
-        if context['the_job'].posted_by == context['profile']:
+        if context['job'].posted_by == context['profile']:
             context['owner'] = True
     
     

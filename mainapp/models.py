@@ -12,9 +12,7 @@ class Jobs(models.Model):
     date_posted = models.DateField(auto_now_add=True)
     major = models.TextField(blank=True)
     performance_type = models.TextField(blank=True)
-    working_time = models.TextField(blank=True)
-    salary = models.TextField(blank=True)
-
+    
 
 class Selection(models.Model):
     job = models.ForeignKey(Jobs, on_delete=models.CASCADE, blank=True, null=True)

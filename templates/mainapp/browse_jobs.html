@@ -36,45 +36,54 @@ Browse Jobs
                             <span style="min-width: 150px;">Performance Type:</span>
                             <b>{{job.performance_type}}</b>
                         </div>
-                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
-                            <span style="min-width: 150px;">Working Time:</span>
-                            <b>{{job.working_time}}</b>
-                        </div>
+                       
                     </div>
                 </div>
                 
                 
 
                 <div class="col-4">
+
                     <div style="display: flex; flex-direction: column;">
-                
+                       
                         <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
-                            <span style="width: 100px; margin-right: 10px;">Salary:</span>
-                            <b>{{job.salary}} Dinars</b>
-                        </div>
-                
-                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
-                            <span style="width: 120px; margin-right: 10px;">Company:</span>
+                            <span style="min-width: 150px;">Company:</span>
                             <b>{{job.posted_by.name}}</b>
                         </div>
-                
                         <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
-                            <span style="width: 100px; margin-right: 10px;">Location:</span>
+                            <span style="min-width: 150px;">Location:</span>
                             <b>{{job.job_location}}</b>
                         </div>
-                
-                        <div style="display: flex; align-items: baseline;">
-                            <span style="width: 120px; margin-right: 10px;">Date:</span>
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Date:</span>
                             <b>{{job.date_posted}}</b>
                         </div>
-                
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Applications:</span>
+                            <b>{{job.applied_bys.all.count}}</b>
+                        </div>
+                        
                     </div>
                 </div>
                 
                 
                 
+                
                 <div class="col-2 d-flex align-items-center justify-content-center">
-                    <a href="" class="btn btn-outline-success">Apply</a>
+                    {% if user.is_authenticated %}
+                        {% if type == "Student" %}
+                            {% if profile.student_resume %}
+                            <a href="{% url 'apply_to_job' job.pk %}" class="btn btn-outline-success btn-lg">Apply</a>
+                            {% else %}
+                            <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">Update Resume To Apply</a>
+                            {% endif %}
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg">Login as Student To Apply</a>
+                        {% endif %}
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg">Login To Apply</a>
+                    {% endif %}
+                    
                 </div>
             </div>
         </div>
