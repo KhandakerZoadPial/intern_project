@@ -10,9 +10,34 @@ class Jobs(models.Model):
     number_of_vaccencies = models.IntegerField(default=1)
     applied_bys = models.ManyToManyField(Student, blank=True, null=True)
     date_posted = models.DateField(auto_now_add=True)
+    major = models.TextField(blank=True)
+    performance_type = models.TextField(blank=True)
+    working_time = models.TextField(blank=True)
+    salary = models.TextField(blank=True)
 
 
 class Selection(models.Model):
     job = models.ForeignKey(Jobs, on_delete=models.CASCADE, blank=True, null=True)
     selected_student = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True, null=True)
     approved_by_professor = models.BooleanField(default=False)
+
+
+class NotificationS(models.Model):
+    job = models.ForeignKey(Jobs, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    when = models.DateTimeField(auto_now_add=True)
+
+
+class NotificationP(models.Model):
+    job = models.ForeignKey(Jobs, on_delete=models.CASCADE)
+    student = models.ForeignKey(Professor, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    when = models.DateTimeField(auto_now_add=True)
+
+
+class NotificationC(models.Model):
+    job = models.ForeignKey(Jobs, on_delete=models.CASCADE)
+    student = models.ForeignKey(Company, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    when = models.DateTimeField(auto_now_add=True)

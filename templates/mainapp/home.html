@@ -10,8 +10,8 @@ Home
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-lg-9 col-xl-7">
-        <div class="card">
-          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+        <div class="card" style="border-radius: 10px; border: 2px solid black;">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px; border-radius: 22px;">
             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
               {% if profile.picture %}
               <img src="{{profile.picture.url}}" alt="Generic placeholder image"
@@ -145,6 +145,7 @@ Home
                   <tr>
                     <th>Title</th>
                     <th>Description</th>
+                    <th>Major</th>
                     <th>Date</th>
                     <th>Location</th>
                     <th>Vaccencies</th>
@@ -159,6 +160,9 @@ Home
                     </td>
                     <td>
                       {{job.job_description|slice:":30"}}
+                    </td>
+                    <td>
+                      {{job.major}}
                     </td>
                     <td>
                       {{job.date_posted}}
@@ -205,35 +209,9 @@ Home
                   {% for job in jobs %}
                   <tr>
                     <td>
-                     {{job.job_title}}
+                      
                     </td>
-                    <td>
-                      {{job.job_description|slice:":30"}}
-                    </td>
-                    <td>
-                      {{job.date_posted}}
-                    </td>
-
-                    <td>
-                      {{job.job_location}}
-                    </td>
-                    <td>
-                      {{job.number_of_vaccencies}}
-                    </td>
-                    <td>
-                     
-                      <a href="{% url 'delete_job' job.pk %}" class="btn btn-danger">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
-                          <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15h9.286zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zM.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8H.8z"/>
-                        </svg>
-                       </a> 
-                       <a href="{% url 'view_a_job' job.pk %}" class="btn btn-outline-primary mt-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
-                          <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                          <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                        </svg>
-                       </a>
-                    </td>
+                    
 
                   </tr>
                   {% endfor %}
@@ -300,6 +278,12 @@ Home
             <label class="form-label" for="form1Example1">Student Email</label>
           </div>
 
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="student_major" required />
+            <label class="form-label" for="form1Example1">Student Major</label>
+          </div>
+
+
           <button type="submit" class="btn btn-outline-danger">Invite</button>
         </form>
       </div>
@@ -331,13 +315,42 @@ Home
             <label class="form-label" for="form1Example1">Job Description</label>
           </div>
           <div class="form-outline mb-4">
-            <input type="text" id="form1Example1" class="form-control" name="job_location" required />
-            <label class="form-label" for="form1Example1">Job Location</label>
+            <input type="text" id="form1Example1" class="form-control" name="major" required />
+            <label class="form-label" for="form1Example1">Required Major</label>
           </div>
+
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="performance_type" required />
+            <label class="form-label" for="form1Example1">Performance Type</label>
+          </div>
+
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="working_time" required />
+            <label class="form-label" for="form1Example1">Working Time</label>
+          </div>
+
+          <div class="form-outline mb-4">
+            <input type="text" id="form1Example1" class="form-control" name="salary" required />
+            <label class="form-label" for="form1Example1">Salary</label>
+          </div>
+
           <div class="form-outline mb-4">
             <input type="number" id="form1Example1" class="form-control" name="number_of_vaccencies" required />
             <label class="form-label" for="form1Example1">Number of Vaccencies</label>
           </div>
+          <div class="mb-4">
+            <label class="form-label" for="form1Example1">Job Location</label>
+            <select id="governorateSelect" name="job_location" class="form-control">
+              <option value="Capital">Capital</option>
+              <option value="Muharraq">Muharraq</option>
+              <option value="Northern">Northern</option>
+              <option value="Southern">Southern</option>
+          </select>
+            
+          </div>
+
+          
+          
           <button class="btn btn-outline-danger" type="submit">Post</button>
         </form>
       </div>

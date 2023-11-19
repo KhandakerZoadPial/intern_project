@@ -17,9 +17,19 @@
         {% block title %}
         {% endblock title %}
     </title>
+    <style>
+      .footer {
+      background-color: #efefef;
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    </style>
 </head>
 
-<body>
+<body style="background-color: #efefef;">
     <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <!-- Container wrapper -->
@@ -53,6 +63,10 @@
           <li class="nav-item">
             <a class="nav-link" href="/">Dashboard</a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/">Dashboard</a>
+          </li>
           
         </ul>
         <!-- Left links -->
@@ -60,6 +74,7 @@
       <!-- Collapsible wrapper -->
   
       <!-- Right elements -->
+      {% if user.is_authenticated %}
       <div class="d-flex align-items-center">
         <!-- Icon -->
        
@@ -75,21 +90,18 @@
             aria-expanded="false"
           >
             <i class="fas fa-bell"></i>
-            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+            <span class="badge rounded-pill badge-notification bg-danger">.</span>
           </a>
           <ul
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="navbarDropdownMenuLink"
           >
-            <li>
-              <a class="dropdown-item" href="#">Some news</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Another news</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </li>
+          {% for notification in notifications %}
+          <li>
+            <a class="dropdown-item" href="#">{{notification.message}}</a>
+          </li>
+          {% endfor %}
+            
           </ul>
         </div>
         <!-- Avatar -->
@@ -136,6 +148,11 @@
           </ul>
         </div>
       </div>
+      {% else %}
+      <a href="" class="btn btn-outline-primary">Log In</a>&nbsp;
+      <a href="" class="btn btn-outline-success">Company Sign Up</a>&nbsp;
+      <a href="" class="btn btn-outline-danger">Professor Sign Up</a>
+      {% endif %}
       <!-- Right elements -->
     </div>
     <!-- Container wrapper -->
@@ -143,7 +160,12 @@
   
   {% block main_content %}
   {% endblock main_content %}
+<br><br><br>
+  <div class="footer">
+    <p>&copy; 2023 Your Company. All rights reserved.</p>
+  </div>
 
   <!-- MDB -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
 </body>
+

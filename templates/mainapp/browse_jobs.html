@@ -17,15 +17,66 @@ Browse Jobs
     {% for job in all_jobs %}
     <div class="card mb-2">
         <div class="card-body">
-            <a href="{% url 'view_a_job' job.pk %}">
-                <b><u>{{job.job_title}}</u></b>
-            </a>
-            <p>{{job.job_description}}</p>
-            <p>
-                <b style="color: red;">{{job.posted_by.name}}</b> &nbsp;&nbsp;
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-            </svg> {{job.job_location}}</p>
+            <div class="row">
+                <div class="col-4">
+                    <div style="display: flex; flex-direction: column;">
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Job Title:</span>
+                            <b>{{job.job_title}}</b>
+                        </div>
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Vacancy:</span>
+                            <b>{{job.number_of_vaccencies}}</b>
+                        </div>
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Required Major:</span>
+                            <b>{{job.major}}</b>
+                        </div>
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Performance Type:</span>
+                            <b>{{job.performance_type}}</b>
+                        </div>
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="min-width: 150px;">Working Time:</span>
+                            <b>{{job.working_time}}</b>
+                        </div>
+                    </div>
+                </div>
+                
+                
+
+                <div class="col-4">
+                    <div style="display: flex; flex-direction: column;">
+                
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="width: 100px; margin-right: 10px;">Salary:</span>
+                            <b>{{job.salary}} Dinars</b>
+                        </div>
+                
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="width: 120px; margin-right: 10px;">Company:</span>
+                            <b>{{job.posted_by.name}}</b>
+                        </div>
+                
+                        <div style="display: flex; margin-bottom: 5px; align-items: baseline;">
+                            <span style="width: 100px; margin-right: 10px;">Location:</span>
+                            <b>{{job.job_location}}</b>
+                        </div>
+                
+                        <div style="display: flex; align-items: baseline;">
+                            <span style="width: 120px; margin-right: 10px;">Date:</span>
+                            <b>{{job.date_posted}}</b>
+                        </div>
+                
+                    </div>
+                </div>
+                
+                
+                
+                <div class="col-2 d-flex align-items-center justify-content-center">
+                    <a href="" class="btn btn-outline-success">Apply</a>
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}

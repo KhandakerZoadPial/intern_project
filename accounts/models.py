@@ -19,6 +19,7 @@ class Student(models.Model):
     my_professor = models.ForeignKey(Professor, blank=True, null=True, on_delete=models.CASCADE)
     student_resume = models.FileField(upload_to='student_resumes/', blank=True, null=True)
     status = models.BooleanField(default=False)
+    major = models.TextField(blank=True)
 
 
 class Company(models.Model):

@@ -18,17 +18,20 @@ def home(request):
             
             context['type'] = 'Student'
             context['profile'] = Student.objects.filter(user=user)[0]
+            context['notifications'] = NotificationS.objects.filter(student=context['profile']).order_by('-pk')
         elif  Professor.objects.filter(user=user).count() > 0:
             context['type'] = 'Professor'
             context['profile'] = Professor.objects.filter(user=user)[0]
             my_students = Student.objects.filter(my_professor=context['profile'])
             context['my_students'] = my_students
+            context['notifications'] = NotificationP.objects.filter(student=context['profile']).order_by('-pk')
             # context['my_applied_jobs'] = Jobs
         elif Company.objects.filter(user=user).count() > 0:
             print('yes')
             context['type'] = 'Company'
             context['profile'] = Company.objects.filter(user=user)[0]
             context['jobs'] = Jobs.objects.filter(posted_by=context['profile']).order_by('-pk')
+            context['notifications'] = NotificationC.objects.filter(student=context['profile']).order_by('-pk')
         
         return render(request, 'mainapp/home.html', context)
     return redirect('login')
@@ -54,6 +57,7 @@ def add_student(request):
         student_profile.user = student_user
         student_profile.email = student_email
         student_profile.my_professor = profile
+        student_profile.major = request.POST.get('student_major')
         student_profile.save()
 
         # now send the email to the student
@@ -72,6 +76,7 @@ def post_jobs(request):
         job_description = request.POST.get('job_description')
         number_of_vaccencies = request.POST.get('number_of_vaccencies')
         job_location = request.POST.get('job_location')
+        major = request.POST.get('major')
 
         job = Jobs()
         job.posted_by = profile
@@ -79,6 +84,10 @@ def post_jobs(request):
         job.job_description = job_description
         job.job_location = job_location
         job.number_of_vaccencies = int(number_of_vaccencies)
+        job.major = major
+        job.performance_type = request.POST.get('performance_type')
+        job.working_time = request.POST.get('working_time')
+        job.salary = request.POST.get('salary')
         job.save()
     
     return redirect('/')
@@ -107,12 +116,15 @@ def view_a_job(request, job_id):
     if Student.objects.filter(user=user).count() > 0:
         context['type'] = 'Student'
         context['profile'] = Student.objects.filter(user=user)[0]
+        context['notifications'] = NotificationS.objects.filter(student=context['profile']).order_by('-pk')
     elif  Professor.objects.filter(user=user).count() > 0:
         context['type'] = 'Professor'
         context['profile'] = Professor.objects.filter(user=user)[0]
+        context['notifications'] = NotificationP.objects.filter(student=context['profile']).order_by('-pk')
     elif Company.objects.filter(user=user).count() > 0:
         context['type'] = 'Company'
         context['profile'] = Company.objects.filter(user=user)[0]
+        context['notifications'] = NotificationC.objects.filter(student=context['profile']).order_by('-pk')
         if context['the_job'].posted_by == context['profile']:
             context['owner'] = True
     
@@ -132,6 +144,12 @@ def apply_to_job(request, job_id):
             the_job = the_job[0]
             the_job.applied_bys.add(profile)
             the_job.save()
+
+            n = NotificationC()
+            n.job = the_job
+            n.student = the_job.posted_by
+            n.message = f'{profile.user.username} applied for "{the_job.job_title}"'
+            n.save()
         else:
             # the job does not exists or deleted
             pass
@@ -150,25 +168,29 @@ def update_resume(request):
     return redirect('home')
 
 
-@login_required(login_url='login')
 def browse_jobs(request):
     context = {
 
     }
     user = request.user
-
-    if Student.objects.filter(user=user).count() > 0:
-        context['type'] = 'Student'
-        context['profile'] = Student.objects.filter(user=user)[0]
-    elif  Professor.objects.filter(user=user).count() > 0:
-        context['type'] = 'Professor'
-        context['profile'] = Professor.objects.filter(user=user)[0]
-        my_students = Student.objects.filter(my_professor=context['profile'])
-        context['my_students'] = my_students
-    elif Company.objects.filter(user=user).count() > 0:
-        context['type'] = 'Company'
-        context['profile'] = Company.objects.filter(user=user)[0]
-        context['jobs'] = Jobs.objects.filter(posted_by=context['profile']).order_by('-pk')
+    if user.is_authenticated:
+        if Student.objects.filter(user=user).count() > 0:
+            context['type'] = 'Student'
+            context['profile'] = Student.objects.filter(user=user)[0]
+            context['notifications'] = NotificationS.objects.filter(student=context['profile']).order_by('-pk')
+        elif  Professor.objects.filter(user=user).count() > 0:
+            context['type'] = 'Professor'
+            context['profile'] = Professor.objects.filter(user=user)[0]
+            my_students = Student.objects.filter(my_professor=context['profile'])
+            context['my_students'] = my_students
+            context['notifications'] = NotificationP.objects.filter(student=context['profile']).order_by('-pk')
+        elif Company.objects.filter(user=user).count() > 0:
+            context['type'] = 'Company'
+            context['profile'] = Company.objects.filter(user=user)[0]
+            context['jobs'] = Jobs.objects.filter(posted_by=context['profile']).order_by('-pk')
+            context['notifications'] = NotificationC.objects.filter(student=context['profile']).order_by('-pk')
+    else:
+        pass
 
     context['all_jobs'] = Jobs.objects.all().order_by('-pk')
     
@@ -191,6 +213,18 @@ def select_student(request, job_id, student_id):
             s.save()
             student.status = True
             student.save()
+
+            n = NotificationS()
+            n.job = job
+            n.student = student
+            n.message = f'Congratulations! You Have been selected for training at "{job.posted_by.name}" for "{job.job_title}"'
+            n.save()
+
+            n = NotificationP()
+            n.job = job
+            n.student = student.my_professor
+            n.message = f'Congratulations! Your Student {student.user.username} has been selected for training at "{job.posted_by.name}" for "{job.job_title}"'
+            n.save()
     return redirect(request.META.get('HTTP_REFERER'))
 
 
