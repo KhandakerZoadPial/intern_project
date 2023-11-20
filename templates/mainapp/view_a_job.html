@@ -139,6 +139,55 @@
                   </tbody>
                 </table>
               </div>
+
+              <br>
+              {% if selections %}
+              <b>Selections</b>
+              <table class="table  align-middle mb-0 bg-white  ">
+                <thead class="bg-light">
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Resume</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in selections %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        {% if student.picture %}
+                        <img src="{{student.selected_student.picture.url}}" alt="" style="width: 45px; height: 45px"
+                          class="rounded-circle" />
+                        {% else %}
+                        <img src="https://storage.needpix.com/rsynced_images/blank-profile-picture-973460_1280.png"
+                          alt="" style="width: 45px; height: 45px" class="rounded-circle" />
+                        {% endif %}
+                        <div class="ms-3">
+                          <p class="fw-bold mb-1">
+                            {% if student.selected_student.name %}
+                            {{student.selected_student.name}}
+                            {% else %}
+                            Not Entered Yet
+                            {% endif %}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="fw-normal mb-1">{{student.selected_student.email}}</p>
+
+                    </td>
+                    <td>
+                      <a href="{{student.selected_student.student_resume.url}}">Download</a>
+                    </td>
+                    
+
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
             {% endif %}
             {% endif %}
         </div>

@@ -146,6 +146,7 @@ def view_a_job(request, job_id):
         context['notifications'] = NotificationC.objects.filter(student=context['profile']).order_by('-pk')
         if context['job'].posted_by == context['profile']:
             context['owner'] = True
+            context['selections'] = Selection.objects.filter(job=context['job'])
     
     
 
