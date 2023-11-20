@@ -4,6 +4,7 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 import random
 import string
+from django.contrib import messages
 
 
 # Create your views here.
@@ -19,11 +20,24 @@ def home(request):
             context['type'] = 'Student'
             context['profile'] = Student.objects.filter(user=user)[0]
             context['notifications'] = NotificationS.objects.filter(student=context['profile']).order_by('-pk')
+            try:
+                context['selections'] = Selection.objects.filter(selected_student=context['profile'])[0]
+                context['feedbacks'] = StudentFeedback.objects.filter(selection=context['selections'], student=context['profile'])
+            except:
+                pass
+            context['my_applications'] = Jobs.objects.filter(applied_bys= context['profile'] )
+            
         elif  Professor.objects.filter(user=user).count() > 0:
             context['type'] = 'Professor'
             context['profile'] = Professor.objects.filter(user=user)[0]
-            my_students = Student.objects.filter(my_professor=context['profile'])
-            context['my_students'] = my_students
+            my_students = Student.objects.filter(my_professor=context['profile']).order_by('-pk')
+            
+            s_temp = []
+            for s in my_students:
+                s.feebacks_set = StudentFeedback.objects.filter(student=s) 
+                s_temp.append(s)
+            
+            context['my_students'] = s_temp
             context['notifications'] = NotificationP.objects.filter(student=context['profile']).order_by('-pk')
             # context['my_applied_jobs'] = Jobs
         elif Company.objects.filter(user=user).count() > 0:
@@ -43,6 +57,10 @@ def add_student(request):
     if  Professor.objects.filter(user=user).count() > 0:
         profile = Professor.objects.filter(user=user)[0]
         student_email = request.POST.get('student_email')
+
+        if User.objects.filter(username=student_email).count() > 0:
+            messages.success(request, 'The Email is Already Registered!')
+            return redirect('home')
 
         student_user = User()
         student_user.username = student_email
@@ -87,6 +105,8 @@ def post_jobs(request):
         job.major = major
         job.performance_type = request.POST.get('performance_type')
         job.save()
+
+        messages.success(request, 'Successfully Posted The Job!')
     
     return redirect('/')
 
@@ -99,6 +119,7 @@ def delete_job(request, job_id):
         job = Jobs.objects.get(pk=job_id)
         if job.posted_by == profile:
             job.delete()
+            messages.success(request, 'Successfully Deleted The Job!')
     
     return redirect('home')
 
@@ -139,19 +160,23 @@ def apply_to_job(request, job_id):
 
         the_job = Jobs.objects.filter(pk=job_id)
         if the_job.count() > 0:
-            the_job = the_job[0]
-            the_job.applied_bys.add(profile)
-            the_job.save()
+            if Selection.objects.filter(selected_student=profile).count() == 0:
+                the_job = the_job[0]
+                the_job.applied_bys.add(profile)
+                the_job.save()
 
-            n = NotificationC()
-            n.job = the_job
-            n.student = the_job.posted_by
-            n.message = f'{profile.user.username} applied for "{the_job.job_title}"'
-            n.save()
+                n = NotificationC()
+                n.job = the_job
+                n.student = the_job.posted_by
+                n.message = f'{profile.user.username} applied for "{the_job.job_title}"'
+                n.save()
+                messages.success(request, 'Successfully Applied To The Job!')
+            else:
+                messages.success(request, f'You are already selected for training at {the_job[0].posted_by.name}')
         else:
             # the job does not exists or deleted
             pass
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('home')
 
 
 @login_required(login_url='login')
@@ -223,8 +248,20 @@ def select_student(request, job_id, student_id):
             n.student = student.my_professor
             n.message = f'Congratulations! Your Student {student.user.username} has been selected for training at "{job.posted_by.name}" for "{job.job_title}"'
             n.save()
+            messages.success(request, 'Student Selected!')
     return redirect(request.META.get('HTTP_REFERER'))
 
+
+@login_required(login_url='login')
+def send_feedback(request, student_id, job_id):
+    message = request.POST.get('message')
+    sf = StudentFeedback()
+    sf.student = Student.objects.get(pk=student_id)
+    sf.selection = Selection.objects.get(selected_student=Student.objects.get(pk=student_id), job=Jobs.objects.get(pk=job_id))
+    sf.message = message
+    sf.save()
+
+    return redirect('home')
 
 # helpers
 def generate_password():

@@ -84,6 +84,7 @@ Home
                     <th>Name</th>
                     <th>Email</th>
                     <th>Status</th>
+                    <th>Feedback</th>
                     <th>Resume</th>
                   </tr>
                 </thead>
@@ -122,6 +123,37 @@ Home
                       {% endif %}
                     </td>
                     <td>
+                      
+                      {% if student.feebacks_set %}
+                      <button data-mdb-toggle="modal" data-mdb-target="#fdb{{student.pk}}" class="btn btn-outline-success">Feedbacks</button>
+                      <div class="modal fade" id="fdb{{student.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="exampleModalLabel">Feebacks</h1>
+                              <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <b>All Feedbacks</b> <hr>
+                              {% for feedback in student.feebacks_set %}
+                              {{feedback.message}}
+                              <br>
+                              {{feedback.when}}
+                              <hr>
+                              {% endfor %}
+                              <br>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {% else %}
+                      No Feedback Yet
+                      {% endif %}
+                    </td>
+                    <td>
                       {% if student.student_resume %}
                       <a href="{{student.student_resume.url}}" target="_blank" class="btn btn-outline-dark">
                         Download
@@ -130,6 +162,7 @@ Home
                       Not Updated
                       {% endif %}
                     </td>
+                    
 
                   </tr>
                   {% endfor %}
@@ -195,6 +228,69 @@ Home
               </table>
             </div>
             {% else %}
+           
+            {% if selections %}
+            <p class="lead fw-normal mb-1 mt-2">Current Training</p>
+            <table class="table  align-middle mb-0 bg-white  ">
+              <thead class="bg-light">
+                <tr>
+                  <th>Company</th>
+                  <th>Job Title</th>
+                  <th>Professor Feedback</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {{selections.job.posted_by.name}}
+                  </td>
+                  <td>
+                    {{selections.job.job_title}}
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-success" data-mdb-toggle="modal" data-mdb-target="#exampleModal{{select.pk}}" type="button">Give Feeback</button>
+                  </td>
+                </tr>
+
+
+                <div class="modal fade" id="exampleModal{{select.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Feeback</h1>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <b>All Feedbacks</b> <hr>
+                        {% for feedback in feedbacks %}
+                        {{feedback.message}}
+                        <br>
+                        {{feedback.when}}
+                        <hr>
+                        {% endfor %}
+                        <br>
+                        <form action="{% url 'send_feedback' selections.selected_student.pk selections.job.pk %}" method="post">
+                          {% csrf_token %}
+                          <div class="form-outline mb-4">
+                            <hr>
+                            <Textarea id="form1Example1" class="form-control" name="message" required></Textarea>
+                            <label class="form-label" for="form1Example1">Feeback</label>
+                          </div>
+                          <button type="submit" class="btn btn-outline-danger">Send</button>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </tbody>
+            </table>
+            <br>
+            {% endif %}
+
+
             <p class="lead fw-normal mb-1 mt-2">My Applications</p>
             <hr>
             <div class="table-responsive">
@@ -206,10 +302,13 @@ Home
                   </tr>
                 </thead>
                 <tbody>
-                  {% for job in jobs %}
+                  {% for application in my_applications %}
                   <tr>
                     <td>
-                      
+                      {{application.posted_by.name}}
+                    </td>
+                    <td>
+                      {{application.job_title}}
                     </td>
                     
 

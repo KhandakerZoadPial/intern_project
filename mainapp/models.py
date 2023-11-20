@@ -39,3 +39,10 @@ class NotificationC(models.Model):
     student = models.ForeignKey(Company, on_delete=models.CASCADE)
     message = models.TextField(blank=True)
     when = models.DateTimeField(auto_now_add=True)
+
+
+class StudentFeedback(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    selection = models.ForeignKey(Selection, on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    when = models.DateTimeField(auto_now_add=True)

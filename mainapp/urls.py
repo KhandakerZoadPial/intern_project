@@ -10,6 +10,7 @@ urlpatterns = [
    path('view_a_job/<int:job_id>', views.view_a_job, name='view_a_job'),
    path('', views.browse_jobs, name='browse_jobs'),
    path('update_resume', views.update_resume, name='update_resume'),
-   path('select_student/<int:job_id>/<int:student_id>', views.select_student, name='select_student')
+   path('select_student/<int:job_id>/<int:student_id>', views.select_student, name='select_student'),
+   path('send_feedback/<int:student_id>/<int:job_id>', views.send_feedback, name='send_feedback')
    
 ]
